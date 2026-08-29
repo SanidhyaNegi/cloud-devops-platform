@@ -1,14 +1,16 @@
-from fastapi.testclient import TestClient
-from app.main import app
+import os
+from fastapi import FastAPI
 
-client = TestClient(app)
+app = FastAPI(title="Cloud DevOps Platform API")
 
-def test_read_root():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json()["status"] == "online"
+@app.get("/")
+def read_root():
+    return {
+        "status": "online",
+        "app_name": "DevOps Capstone API",
+        "environment": os.getenv("ENVIRONMENT", "development")
+    }
 
-def test_health_check():
-    response = client.get("/healthz")
-    assert response.status_code == 200
-    assert response.json()["status"] == "healthy"
+@app.get("/healthz")
+def health_check():
+    return {"status": "healthy"}

@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  AWS_REGION: ap-south-1                  # Adjust to your AWS region
+  AWS_REGION: ap-south-1                  # AWS region set to Mumbai
   ECR_REPOSITORY: cloud-devops-platform  # ECR repo name
   IMAGE_TAG: ${{ github.sha }}
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          pytest app/test_main.py
+          PYTHONPATH=app pytest app/test_main.py
 
   build-and-scan:
     name: 3 & 4. Build Image & Trivy Scan
