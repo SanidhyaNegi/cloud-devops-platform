@@ -1,0 +1,95 @@
+# 1. Namespace dedicated to your application
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devops-platform
+---
+# 2. ConfigMap for non-sensitive environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: devops-platform
+data:
+  NODE_ENV: "production"
+  PORT: "8000"
+  LOG_LEVEL: "info"
+---
+# 3. Secret for sensitive credentials (Base64 encoded strings)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+  namespace: devops-platform
+type: Opaque
+stringData:
+  DB_PASSWORD: "SuperSecretPassword123!"
+  API_KEY: "devops-platform-secret-key"
+---
+# 4. Deployment pulling your container image from Amazon ECR
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app
+  namespace: devops-platform
+  labels:
+    app: devops-app
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: devops-app
+  template:
+    metadata:
+      labels:
+        app: devops-app
+    spec:
+      containers:
+      - name: app-container
+        image: 857481120992.dkr.ecr.ap-south-1.amazonaws.com/cloud-devops-platform:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+# 5. Service exposing the application internally and via NodePort
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-app-service
+  namespace: devops-platform
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8000
+    nodePort: 30080
+    name: http
+  selector:
+    app: devops-app

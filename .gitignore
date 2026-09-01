@@ -1,0 +1,18 @@
+# Terraform binaries and provider executables
+*.exe
+terraform.exe
+terraform/terraform.exe
+.terraform/
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+
+# Terraform state files (Sensitive)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+tfplan
+terraform/tfplan
+
+# Miscellaneous
+.env
+*.log
