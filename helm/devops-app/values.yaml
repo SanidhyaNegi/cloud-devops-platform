@@ -1,7 +1,7 @@
 ﻿replicaCount: 2
 
 image:
-  repository: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/cloud-devops-platform
+  repository: 857481120992.dkr.ecr.ap-south-1.amazonaws.com/cloud-devops-platform
   pullPolicy: Always
   tag: "latest"
 
