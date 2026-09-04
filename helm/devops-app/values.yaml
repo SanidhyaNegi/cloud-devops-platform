@@ -3,7 +3,7 @@
 image:
   repository: 857481120992.dkr.ecr.ap-south-1.amazonaws.com/cloud-devops-platform
   pullPolicy: Always
-  tag: "latest"
+  tag: "v1.1.0"
 
 namespace: devops-platform
 
